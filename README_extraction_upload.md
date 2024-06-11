@@ -1,16 +1,29 @@
-import os
-import subprocess
-from google.cloud import storage
-from multiprocessing import Process, Queue
-import time
+# Frame Extraction and Upload Script
 
+This script is designed to extract frames from a video file and upload them to Google Cloud Storage (GCS). The process is optimized using batching and multiprocessing to handle large video files efficiently.
+
+## How It Works
+
+The script performs the following steps:
+
+1. **Extract Frames**: Using FFmpeg, the script extracts frames from the video file at a specified frame rate.
+2. **Batch Uploads**: Frames are collected into batches and uploaded to GCS. This reduces the number of API calls and optimizes the upload process.
+3. **Multiprocessing**: The extraction and uploading processes run in parallel using Python's multiprocessing module, enhancing performance.
+
+## Script Components
+
+### 1. Upload Function
+
+The `upload_to_gcs` function handles uploading frames to GCS as they are created.
+
+```python
 def upload_to_gcs(bucket_name, frame_queue):
     storage_client = storage.Client()
     bucket = storage_client.bucket(bucket_name)
 
     while True:
         frames = frame_queue.get()
-        if frames is None:
+        if frames are None:
             break
         for local_frame_path, gcs_frame_path in frames:
             try:
@@ -20,13 +33,17 @@ def upload_to_gcs(bucket_name, frame_queue):
                 print(f"Uploaded {local_frame_path} to GCS")
             except Exception as e:
                 print(f"Failed to upload {local_frame_path}: {e}")
+```
 
+### 2. Frame Extraction and Queuing Function
+
+The extract_and_queue_frames function extracts frames from the video and queues them in batches for uploading.
+
+```python
 def extract_and_queue_frames(video_path, output_dir, bucket_name, movie_name, fps=1, start_time=None, frame_queue=None, batch_size=100):
-    # Ensure the output directory exists
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
-    # Construct the FFmpeg command
     command = ['ffmpeg']
     if start_time:
         command += ['-ss', start_time]
@@ -36,7 +53,6 @@ def extract_and_queue_frames(video_path, output_dir, bucket_name, movie_name, fp
         os.path.join(output_dir, 'output_%04d.png')
     ]
 
-    # Run the FFmpeg command
     process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     print("FFmpeg command started...")
 
@@ -51,7 +67,6 @@ def extract_and_queue_frames(video_path, output_dir, bucket_name, movie_name, fp
             if output:
                 print(output.decode().strip())
 
-            # Collect frames and queue them in batches
             frame_files = [f for f in os.listdir(output_dir) if f.startswith('output_') and f.endswith('.png')]
             frame_files.sort()
             if frame_files:
@@ -75,24 +90,68 @@ def extract_and_queue_frames(video_path, output_dir, bucket_name, movie_name, fp
     
     frame_queue.put(None)
     print(f"Total frames processed: {frame_count}")
+```
 
+### 3. Main Execution
+Starts the processes and manages the overall workflow.
+
+```python
 if __name__ == "__main__":
     # Example usage
-    video_path = '/Users/rsudhir/Documents/GitHub/Data-Science-Project---Outfits-from-Ghibli-Films/HowlsMovingCastle/MovieFile/Howls.Moving.Castle.2004.720p.BluRay.x264-x0r.mkv'
-    output_dir = '/Users/rsudhir/Documents/GitHub/Data-Science-Project---Outfits-from-Ghibli-Films/HowlsMovingCastle/frames'
-    bucket_name = 'ghibli-movie-frames'
-    movie_name = 'howls-moving-castle'
+    video_path = '/path/to/your/video/file.mkv'
+    output_dir = '/path/to/output/directory'
+    bucket_name = 'your-gcs-bucket-name'
+    movie_name = 'your-movie-name'
     start_time = '00:00:00'
 
-    # Create a queue to handle frame paths
     frame_queue = Queue()
 
-    # Start the upload process
     uploader_process = Process(target=upload_to_gcs, args=(bucket_name, frame_queue))
     uploader_process.start()
 
-    # Extract frames and queue them for uploading
     extract_and_queue_frames(video_path, output_dir, bucket_name, movie_name, fps=24, start_time=start_time, frame_queue=frame_queue, batch_size=300)
 
-    # Wait for the uploader process to finish
     uploader_process.join()
+
+```
+
+## Configuration
+
+- **video_path**: Path to the video file.
+- **output_dir**: Directory to store extracted frames.
+- **bucket_name**: Google Cloud Storage bucket name.
+- **movie_name**: Name of the movie for organizing frames in GCS.
+- **start_time**: Starting time for frame extraction.
+- **fps**: Frames per second for extraction.
+- **batch_size**: Number of frames per batch for uploading.
+
+## How to Use
+
+1. **Set Up Google Cloud Storage**: Ensure you have a GCS bucket and appropriate credentials.
+2. **Install Dependencies**: Ensure you have FFmpeg and `google-cloud-storage` installed.
+3. **Run the Script**: Execute the script with the appropriate parameters.
+
+### Setting Up Google Cloud Storage
+
+- **Create a Bucket**: Create a GCS bucket to store the frames.
+- **Service Account**: Create a service account with necessary permissions and download the JSON key file.
+- **Environment Variable**: Set the `GOOGLE_APPLICATION_CREDENTIALS` environment variable to point to your service account JSON key file.
+
+```bash
+export GOOGLE_APPLICATION_CREDENTIALS="/path/to/your-service-account-file.json"
+```
+
+### Installing Dependencies
+
+```bash
+pip install google-cloud-storage
+pip install ffmpeg
+```
+
+### Running the Script
+Ensure the script is executed with correct paths and parameters as shown in the example usage.
+
+### Notes
+
+**Performance**: Adjust the batch_size based on your system's memory and network performance.
+**Monitoring**: Monitor the process for any interruptions or errors and adjust parameters as needed.
