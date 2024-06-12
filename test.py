@@ -51,7 +51,7 @@ def extract_and_queue_frames(video_path, output_dir, bucket_name, movie_name, fp
     command += [
         '-i', video_path,
         '-vf', f'fps={fps}',
-        os.path.join(output_dir, 'output_%05d.png')  # Adjusted to 5 digits for consistency
+        os.path.join(output_dir, 'output_%06d.png')  # Adjusted to 6 digits for consistency
     ]
 
     # Run the FFmpeg command
