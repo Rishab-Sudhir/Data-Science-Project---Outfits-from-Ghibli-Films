@@ -137,8 +137,14 @@ if __name__ == "__main__":
 - **Service Account**: Create a service account with necessary permissions and download the JSON key file.
 - **Environment Variable**: Set the `GOOGLE_APPLICATION_CREDENTIALS` environment variable to point to your service account JSON key file.
 
+mac
 ```bash
-export GOOGLE_APPLICATION_CREDENTIALS="/path/to/your-service-account-file.json"
+export GOOGLE_APPLICATION_CREDENTIALS="/path/to/your-service-account-file.json"#
+```
+
+windows
+```terminal
+$env:GOOGLE_APPLICATION_CREDENTIALS = "C:\path\to\your-service-account-file.json"
 ```
 
 ### Installing Dependencies
