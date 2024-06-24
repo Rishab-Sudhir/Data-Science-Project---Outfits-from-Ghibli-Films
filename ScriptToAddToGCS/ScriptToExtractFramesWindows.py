@@ -6,7 +6,7 @@ from threading import Thread
 import time
 
 def upload_to_gcs(bucket_name, frame_queue):
-    os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = r"C:\Users\rohan\OneDrive\Documents\GitHub\Data-Science-Project---Outfits-from-Ghibli-Films\data-science-project-ghibli-7da755faf350.json"
+    os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = r"C:\Users\rohan\OneDrive\Documents\GitHub\Data-Science-Project---Outfits-from-Ghibli-Films\ScriptToAddToGCS\data-science-project-ghibli-7da755faf350.json"
     storage_client = storage.Client()
     bucket = storage_client.bucket(bucket_name)
 
