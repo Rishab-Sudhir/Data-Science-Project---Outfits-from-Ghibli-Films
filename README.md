@@ -22,8 +22,9 @@ The repository is structured into several main directories and scripts:
   - `Howls_Color_Analysis.ipynb`: Jupyter Notebook for color analysis.
   - `howls_dominant_colors.csv`: CSV file with extracted dominant colors.
 
-  *Obselete Since I didn't end up using this script, so can ignore.*
+
 - **ScriptToAddToGCS**
+  - *Obselete Since I didn't end up using this script, so can ignore.*
   - `README_extraction_upload.md`: Documentation for uploading extracted data to Google Cloud Storage.
   - `ScriptToExtractFrames.py`: Script to extract frames from the movie.
   - `ScriptToExtractFramesWindows.py`: Windows-compatible script to extract frames.
