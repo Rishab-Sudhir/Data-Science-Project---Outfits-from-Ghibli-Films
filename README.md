@@ -47,16 +47,14 @@ The repository is structured into several main directories and scripts:
 
 1. Clone the repository:
    
-         ```sh
+
          git clone https://github.com/Rishab-Sudhir/Data-Science-Project---Outfits-from-Ghibli-Films.git
          cd Data-Science-Project---Outfits-from-Ghibli-Films
-        ```
+
 
 2. Install required python libraries:
    
-         ```sh
          pip install -r requirements.txt
-        ```
 
 3. Ensure FFmpeg is installed and available in your system path.
 
@@ -66,15 +64,11 @@ The repository is structured into several main directories and scripts:
 
 1. Run the ExtractColors.py script to extract frames from the movie and then the dominant colors from frames:
    
-          ```sh
          python ExtractingColors/ExtractColors.py
-        ```
 
 2. If the process is interrupted, you can resume with ExtractColorsRemaining.py:
    
-          ```sh
          python ExtractingColors/ExtractColorsRemaining.py
-        ```
 
 ### Analysis
 
