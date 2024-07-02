@@ -48,7 +48,7 @@ def process_frames(frame_queue, num_colors=10):
             except Exception as e:
                 print(f"Failed to process {local_frame_path}: {e}")
 
-def extract_and_queue_frames(video_path, output_dir, frame_queue, fps=3, start_time=None, batch_size=10):
+def extract_and_queue_frames(video_path, output_dir, frame_queue, fps=3, start_time=None, finish_time=None, batch_size=10):
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
         print(f"Created output directory: {output_dir}")
@@ -56,10 +56,12 @@ def extract_and_queue_frames(video_path, output_dir, frame_queue, fps=3, start_t
     command = ['ffmpeg']
     if start_time:
         command += ['-ss', start_time]
+    command += ['-i', video_path]
+    if finish_time:
+        command += ['-to', finish_time]
     command += [
-        '-i', video_path,
         '-vf', f'fps={fps}',
-        os.path.join(output_dir, 'output_%04d.png')
+        os.path.join(output_dir, 'output_%07d.png')
     ]
 
     process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -99,9 +101,10 @@ def extract_and_queue_frames(video_path, output_dir, frame_queue, fps=3, start_t
     print("Frame extraction completed.")
 
 if __name__ == "__main__":
-    video_path = '/Users/rsudhir/Documents/GitHub/Data-Science-Project---Outfits-from-Ghibli-Films/HowlsMovingCastle/MovieFile/Howls.Moving.Castle.2004.720p.BluRay.x264-x0r.mkv'
-    output_dir = '/Users/rsudhir/Documents/GitHub/Data-Science-Project---Outfits-from-Ghibli-Films/HowlsMovingCastle/frames'
-    start_time = '00:00:00'
+    video_path = '/Users/rsudhir/Documents/GitHub/Data-Science-Project---Outfits-from-Ghibli-Films/NausicaaOfTheValleyOfTheWind/MovieFile/NausicaäoftheValleyoftheWind.mkv'
+    output_dir = '/Users/rsudhir/Documents/GitHub/Data-Science-Project---Outfits-from-Ghibli-Films/NausicaaOfTheValleyOfTheWind/frames'
+    start_time = '00:00:20'
+    finish_time = '01:57:00'  
 
     frame_queue = Queue()
 
@@ -110,7 +113,7 @@ if __name__ == "__main__":
     processor_process.start()
 
     # Extract frames and queue them for processing
-    extract_process = Process(target=extract_and_queue_frames, args=(video_path, output_dir, frame_queue, 3, start_time, 10))
+    extract_process = Process(target=extract_and_queue_frames, args=(video_path, output_dir, frame_queue, 3, start_time, finish_time, 10))
     extract_process.start()
 
     # Wait for the processes to finish
