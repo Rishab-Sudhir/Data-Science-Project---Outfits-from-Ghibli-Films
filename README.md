@@ -22,6 +22,12 @@ The repository is structured into several main directories and scripts:
   - `Howls_Color_Analysis.ipynb`: Jupyter Notebook for color analysis.
   - `howls_dominant_colors.csv`: CSV file with extracted dominant colors.
 
+- **NausicaaOfTheValleyOfTheWind**
+  - `MovieFile`: Directory containing the movie file (not included due to copyright).
+  - `frames`: Directory where frames are stored during extraction.
+  - `.DS_Store`: System file for directory structure.
+  - `Nausicaa_Color_Analysis.ipynb`: Jupyter Notebook for color analysis.
+  - `Nausicaa_dominant_colors.csv`: CSV file with extracted dominant colors.
 
 - **ScriptToAddToGCS**
   - *Obselete Since I didn't end up using this script, so can ignore.*
